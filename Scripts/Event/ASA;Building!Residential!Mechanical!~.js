@@ -26,6 +26,7 @@ if(capLicenseResult.getSuccess()){
 removeAllFees(capId);
 if(duct == "Yes" || worktype == "New Construction") {
   //valuation-based fees
+  addFee("MECHV_05", "BLD_MECH_VAL", "FINAL", feeQty, feeInvoice);
   addFee("MECHV_10", "BLD_MECH_VAL", "FINAL", feeQty, feeInvoice);
   addFee("MECHV_20", "BLD_MECH_VAL", "FINAL", feeQty, feeInvoice);
   addFee("MECHV_30", "BLD_MECH_VAL", "FINAL", feeQty, feeInvoice);
@@ -34,7 +35,7 @@ if(duct == "Yes" || worktype == "New Construction") {
   removeFee("MECHV_30");
   logDebug("Mechanical bond verification fee waived");
   }
-  //add tech fee
+  //add processing fee
   addFee("MECHV_40", "BLD_MECH_VAL", "FINAL", feeQty, feeInvoice);
 }
 else {
@@ -66,6 +67,6 @@ else {
   }
   //add state surcharge
   addFee("MECH_130", feeSchedule, "FINAL", feeQty, feeInvoice);
-  //add tech fee
+  //add processing fee
   addFee("MECH_150", feeSchedule, "FINAL", feeQty, feeInvoice);
 }

@@ -10,7 +10,7 @@ if(workType=="New Connection"){
   addStdCondition("Building Permit","Requires Right of Way Permit");
   logDebug("New Connection selected; fees added");
 }
-else if(workType=="Repair"){
+else if(workType=="Repair" || workType=="Emergency Repair"){
   addFee("SWR_030", feeSchedule, "FINAL", feeQty, "Y");
   addFee("SWR_035", feeSchedule, "FINAL", feeQty, "Y");
   logDebug("Repair selected; fees added");
@@ -20,6 +20,10 @@ else {
   addFee("SWR_055", feeSchedule, "FINAL", feeQty, "Y");
   addStdCondition("Building Permit","Requires Right of Way Permit");
   logDebug("Disconnection selected; fees added");
+}
+if(workType=="Emergency Repair"){
+  deactivateTask("Engineering Review");
+  activateTask("Permit Issuance");
 }
 addFee(feeCode, feeSchedule, "FINAL", feeQty, "Y");
 //add bond verification

@@ -32,7 +32,7 @@ eval(getScriptText("INCLUDES_BATCH"));
 eval(getScriptText("INCLUDES_CUSTOM"));
 
 
-function getScriptText(vScriptName){
+function getScriptText(vScriptName) {
 	vScriptName = vScriptName.toUpperCase();
 	var emseBiz = aa.proxyInvoker.newInstance("com.accela.aa.emse.emse.EMSEBusiness").getOutput();
 	var emseScript = emseBiz.getScriptByPK(aa.getServiceProviderCode(),vScriptName,"ADMIN");
@@ -105,9 +105,7 @@ if (emailAddress.length)
 /-----------------------------------------------------------------------------------------------------*/
 
 
-function mainProcess()
-	{
-
+function mainProcess() {
 	var capCount = 0;
 	var inspDate;
 	var setName;
@@ -120,8 +118,7 @@ function mainProcess()
 
 
 
-	for(var i=0; i < SetMemberArray.length; i++)
-	{
+	for (var i=0; i < SetMemberArray.length; i++) {
 
 	  var id= SetMemberArray[i];
 
@@ -130,8 +127,7 @@ function mainProcess()
 
 		var renewalCapId = null;
 
-		if (!capId)
-			{
+		if (!capId) {
 			logDebug("Could not get a Cap ID for " + id.getID1() + "-" + id.getID2() + "-" + id.getID3());
 			continue;
 		}
@@ -140,8 +136,7 @@ function mainProcess()
 
 		// get expiration info
 		var expResult = aa.expiration.getLicensesByCapID(capId);
-		if(!expResult)
-		{
+		if (!expResult) {
 			logDebug(altId + ": ERROR Could not get Renewal Information");
 			continue;
 		}
@@ -168,34 +163,30 @@ function mainProcess()
 
 		var refLic = getRefLicenseProf(altId) // Load the reference License Professional
 
-		if (refLic && deactivateLicense.substring(0,1).toUpperCase().equals("Y"))
-			{
+		if (refLic && deactivateLicense.substring(0,1).toUpperCase().equals("Y")) {
 			refLic.setAuditStatus("I");
 			aa.licenseScript.editRefLicenseProf(refLic);
 			logDebug(altId + ": deactivated linked Registration");
-			}
+		}
 
 		// update expiration status
 
 
-		if (newExpStatus.length > 0 && newExpStatus != null)
-			{
+		if (newExpStatus.length > 0 && newExpStatus != null) {
 			b1Exp.setExpStatus(newExpStatus);
 			aa.expiration.editB1Expiration(b1Exp.getB1Expiration());
 			logDebug(altId + ": Update expiration status: " + newExpStatus);
-			}
+		}
 
 		// update expiration date based on interval
 
-		if (parseInt(gracePeriodDays) != 0 && gracePeriodDays != null)
-			{
+		if (parseInt(gracePeriodDays) != 0 && gracePeriodDays != null) {
 			newExpDate = dateAdd(b1ExpDate,parseInt(gracePeriodDays));
 			b1Exp.setExpDate(aa.date.parseDate(newExpDate));
 			aa.expiration.editB1Expiration(b1Exp.getB1Expiration());
 
 			logDebug(altId + ": updated CAP expiration to " + newExpDate);
-			if (refLic)
-				{
+			if (refLic) {
 				refLic.setLicenseExpirationDate(aa.date.parseDate(newExpDate));
 				aa.licenseScript.editRefLicenseProf(refLic);
 				logDebug(altId + ": updated Registration expiration to " + newExpDate);
@@ -203,15 +194,14 @@ function mainProcess()
 			}
 
 
-				if (sendEmailToContactTypes.length > 0 && emailTemplate.length > 0) {
+		if (sendEmailToContactTypes.length > 0 && emailTemplate.length > 0) {
 
 			var conTypeArray = sendEmailToContactTypes.split(",");
 			var	conArray = getContactArrayCustom(capId);
 
 			//logDebug("Have the contactArray");
 
-			for (thisCon in conArray)
-				{
+			for (thisCon in conArray) {
 				conEmail = null;
 				b3Contact = conArray[thisCon];
 
@@ -222,6 +212,7 @@ function mainProcess()
 
 				if (conEmail) {
 					emailParameters = aa.util.newHashtable();
+					getPrimaryAddressLineParam4Notification(emailParameters);
 					addParameter(emailParameters,"$$altid$$",altId);
 					addParameter(emailParameters,"$$acaUrl$$",acaSite + getACAUrl());
 					addParameter(emailParameters,"$$businessName$$",cap.getSpecialText());
@@ -237,20 +228,8 @@ function mainProcess()
 			}
 		}
 
-
-
-		// schedule Inspection
-
-		if (inspSched.length > 0 && inspSched != null)
-			{
-			scheduleInspection(inspSched,"1");
-			inspId = getScheduledInspId(inspSched);
-			if (inspId) autoAssignInspection(inspId);
-			//logDebug(altId + ": Scheduled " + inspSched + ", Inspection ID: " + inspId);
-			}
 		// update CAP status
-		if (newAppStatus.length > 0 && newAppStatus != null && newAppStatus != "null")
-		{
+		if (newAppStatus.length > 0 && newAppStatus != null && newAppStatus != "null") {
 			updateAppStatus(newAppStatus, "", capId);
 		}
 
@@ -277,7 +256,6 @@ function mainProcess()
 							for (var fe in feeList.split(","))
 								var feObj = addFee(feeList.split(",")[fe],feeSched,feePeriod,1,"Y",renewalCapId);
 						}
-
 					}
 				}
 			}
@@ -285,8 +263,7 @@ function mainProcess()
 
 	// update set type and status
 	setScriptResult = aa.set.getSetByPK(SetId);
-	if (setScriptResult.getSuccess())
-	{
+	if (setScriptResult.getSuccess()) {
 		setScript = setScriptResult.getOutput();
 		setScript.setSetStatus("Completed");
 		updSet = aa.set.updateSetHeader(setScript).getOutput();
@@ -297,11 +274,9 @@ function mainProcess()
 
 	aa.env.setValue("ScriptReturnCode","0");
 	aa.env.setValue("ScriptReturnMessage", "Update Set successful - Registration Renewal Process Script");
-
 }
 
-function getContactArrayCustom(capId)
-   {
+function getContactArrayCustom(capId) {
    // Returns an array of associative arrays with contact attributes.  Attributes are UPPER CASE
    // optional capid
    var thisCap = capId;
@@ -309,11 +284,9 @@ function getContactArrayCustom(capId)
    var cArray = new Array();
 
    var capContactResult = aa.people.getCapContactByCapID(thisCap);
-   if (capContactResult.getSuccess())
-      {
+   if (capContactResult.getSuccess()) {
       var capContactArray = capContactResult.getOutput();
-      for (yy in capContactArray)
-         {
+      for (yy in capContactArray) {
          var aArray = new Array();
 
          aArray["lastName"] = capContactArray[yy].getPeople().lastName;
@@ -326,7 +299,7 @@ function getContactArrayCustom(capId)
          aArray["phone2"] = capContactArray[yy].getPeople().phone2;
          aArray["phone2countrycode"] = capContactArray[yy].getCapContactModel().getPeople().getPhone2CountryCode();
          aArray["email"] = capContactArray[yy].getCapContactModel().getPeople().getEmail();
-		 aArray["preferredChannel"] = capContactArray[yy].getCapContactModel().getPreferredChannel();
+		     aArray["preferredChannel"] = capContactArray[yy].getCapContactModel().getPreferredChannel();
 
 		// var capcontact = capContactArray[yy].getCapContactModel();
 		 //for (xxx in capcontact) aa.print(capcontact[xxx]);

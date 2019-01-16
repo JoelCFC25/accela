@@ -13,7 +13,7 @@ if(workType=="New Connection"){
     addStdCondition("Assessment","Deferred Assessment");
   }
 }
-else if(workType=="Repair"){
+else if(workType=="Repair" || workType=="Emergency Repair"){
   addFee("SWR_030", feeSchedule, "FINAL", feeQty, "Y");
   addFee("SWR_035", feeSchedule, "FINAL", feeQty, "Y");
   logDebug("Repair selected; fees added");
@@ -23,6 +23,10 @@ else {
   addFee("SWR_045", feeSchedule, "FINAL", feeQty, "Y");
   addStdCondition("Building Permit","Requires Right of Way Permit");
   logDebug("Disconnection selected; fees added");
+}
+if(workType=="Emergency Repair"){
+  deactivateTask("Engineering Review");
+  activateTask("Permit Issuance");
 }
 //add bond verification
 addFee("SWR_060", feeSchedule, "FINAL", feeQty, "Y");

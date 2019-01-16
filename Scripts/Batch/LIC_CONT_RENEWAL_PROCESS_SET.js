@@ -1,5 +1,5 @@
 /*------------------------------------------------------------------------------------------------------/
-| Program: LIC_RENEWAL_PROCESS_SET.js  Trigger: Batch
+| Program: LIC_CONRENEWAL_PROCESS_SET.js  Trigger: Batch
 | Client:
 |
 | Version 1.0 - Base Version. 02/05/2014

@@ -3,6 +3,7 @@ try {
 if (wfStatus == 'Approved') {
 	saveId = capId;
 	parentLicenseCAPID = getParentCapIDForReview(capId);
+	var rentalStatus = getAppSpecific("Rental Status", capId);
 	comment('ParentLic CapID: ' + parentLicenseCAPID);
 	capId = parentLicenseCAPID;
 	if (parentLicenseCAPID) {
@@ -13,7 +14,12 @@ if (wfStatus == 'Approved') {
 	if (parentLicenseCAPID) {
 		comment('Parent Custom ID: ' + pCapIdCustomId);
 	}
-	updateAppStatus('Active', 'Renewal approved by: ' + capIDString, parentLicenseCAPID);
+	if (rentalStatus == "Rented"){
+		updateAppStatus('Active', 'Renewal approved by: ' + capIDString, parentLicenseCAPID);
+	}
+	if (rentalStatus == "Exempt"){
+		updateAppStatus('Exempt', 'Renewal approved by: ' + capIDString, parentLicenseCAPID);
+	}
 	updateAppStatus('Renewed', 'Renewal Approved', saveId);
 
   // Figure out new EXPIRATION Date

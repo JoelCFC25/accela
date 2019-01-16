@@ -13,7 +13,7 @@ if (wfStatus == 'Approved') {
 	if (parentLicenseCAPID) {
 		comment(' Parent Custom ID = ' + pCapIdCustomId);
 	}
-	updateAppStatus('Active', 'Renewal Approved By: ' + capIDString, parentLicenseCAPID);
+	updateAppStatus('Active', 'Renewal approved by: ' + capIDString, parentLicenseCAPID);
   updateAppStatus('Renewed', 'Renewal Approved', saveId);
 
   // Figure out new EXPIRATION Date
